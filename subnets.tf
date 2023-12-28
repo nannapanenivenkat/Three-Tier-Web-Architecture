@@ -18,6 +18,7 @@ resource "aws_subnet" "Private_web_app_subnet" {
   availability_zone       = element(["us-east-1a", "us-east-1b"], count.index)
   map_public_ip_on_launch = true
 
+
      tags = {
      Name = "Private_web_app_subnet-${count.index + 1}"
    }

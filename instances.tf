@@ -24,8 +24,12 @@ resource "aws_instance" "private_instance" {
    security_groups = [aws_default_security_group.default.id]
    subnet_id      = aws_subnet.Private_web_app_subnet[count.index].id
    associate_public_ip_address=false
+   
 
    tags = {
      Name = "private_instance"
    }
 }
+
+
+
