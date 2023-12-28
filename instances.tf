@@ -1,7 +1,7 @@
 #################################################### Public_Instance ##########################################################
 resource "aws_instance" "public_instance" {
    count = 2
-   ami             = "ami-0fa1ca9559f1892ec"
+   ami             = "ami-00b8917ae86a424c9"
    instance_type   = "t2.micro"
    key_name       = "mynewkey"
    security_groups = [aws_default_security_group.default.id]
@@ -18,7 +18,7 @@ resource "aws_instance" "public_instance" {
 
 resource "aws_instance" "private_instance" {
    count = 2
-   ami             = "ami-0fa1ca9559f1892ec"
+   ami             = "ami-00b8917ae86a424c9"
    instance_type   = "t2.micro"
    key_name       = "mynewkey"
    security_groups = [aws_default_security_group.default.id]

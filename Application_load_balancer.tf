@@ -41,6 +41,6 @@ resource "aws_lb_listener" "front_end" {
 resource "aws_lb_target_group_attachment" "test" {
     count = length(aws_instance.public_instance)
   target_group_arn = aws_lb_target_group.alb-example.arn
-  target_id        = aws_instance.public_instance[count.index].arn
+  target_id        = aws_instance.public_instance[count.index].id
   port             = 80
 }
