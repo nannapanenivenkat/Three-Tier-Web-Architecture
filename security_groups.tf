@@ -1,72 +1,93 @@
-resource "aws_default_security_group" "default" {
+resource "aws_security_group" "internet_facing_sg" {
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    description = "TLS from VPC"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-    ingress {
-    description = "SSH"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-    ingress {
-    description = "TLS from VPC"
+    description = "HTTP"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["35.146.201.142/32"]
+  }
+
+
+  tags = {
+    Name = "internet_facing_sg"
+  }
+}
+
+############################################## web_sg_public ##########################################################
+
+resource "aws_default_security_group" "web_sg_public" {
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description = "HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["35.146.201.142/32"]
+  }
+
+    ingress {
+    description = "HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = [aws_security_group.internet_facing_sg.id]
   }
 
   tags = {
-    Name = "AWSsecurity"
+    Name = "web_sg_public"
   }
 }
 
 
-############################################## ALB-SG ##########################################################
+############################################## internet_LB-SG ##########################################################
 
-resource "aws_security_group" "ALB_SG" {
+resource "aws_security_group" "internal_LB-SG" {
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    description = "TLS from VPC"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-    ingress {
-    description = "SSH"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-    ingress {
-    description = "TLS from VPC"
+    description = "HTTP"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [aws_default_security_group.web_sg_public.id]
   }
 
   tags = {
-    Name = "ALB_SG"
+    Name = "internet_LB-SG"
   }
 }
 
-########################################################## RDS_SECURITY_GROUP ###################################################################
-resource "aws_security_group" "rds_sg" {
+############################################## private_instance_sg ##########################################################
+
+resource "aws_security_group" "private_instance_sg" {
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description = "Custom rule for port 4000 from My IP"
+    from_port   = 4000
+    to_port     = 4000
+    protocol    = "tcp"
+    cidr_blocks = ["35.146.201.142/32"]
+  }
+
+    ingress {
+    description = "Custom rule for port 4000 from My IP"
+    from_port   = 4000
+    to_port     = 4000
+    protocol    = "tcp"
+    cidr_blocks = [aws_security_group.internal_LB-SG.id]
+  }
+
+  tags = {
+    Name = "private_instance_sg"
+  }
+}
+
+########################################################## database_sg ###################################################################
+resource "aws_security_group" "database_sg" {
   name        = "rds_security_group"
   description = "Security group for RDS"
   vpc_id      = aws_vpc.main.id
@@ -75,10 +96,10 @@ resource "aws_security_group" "rds_sg" {
     from_port   = 3306  # MySQL default port
     to_port     = 3306
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # Allow traffic from any IP (adjust as needed)
+    cidr_blocks = [aws_security_group.private_instance_sg.id] # Allow traffic from any IP (adjust as needed)
   }
 
   tags = {
-    Name = "rds_sg"
+    Name = "database_sg"
   }
 }

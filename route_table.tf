@@ -61,7 +61,7 @@ resource "aws_route_table_association" "private_DB_subnet_association" {
 resource "aws_route" "private_nat_gateway" {
   route_table_id         = aws_route_table.private_web_app_route.id
     destination_cidr_block = "0.0.0.0/0"  # This assumes you want to route all traffic through the NAT gateway
-    nat_gateway_id         = aws_nat_gateway.public_nat.id
+    nat_gateway_id         = aws_nat_gateway.public_nat1.id
   
 }
 
@@ -69,7 +69,7 @@ resource "aws_route" "private_nat_gateway" {
 resource "aws_route" "private_db_nat_gateway" {
   route_table_id         = aws_route_table.private_DB_route.id
     destination_cidr_block = "0.0.0.0/0"  # This assumes you want to route all traffic through the NAT gateway
-    nat_gateway_id         = aws_nat_gateway.public_nat.id
+    nat_gateway_id         = aws_nat_gateway.public_nat2.id
   
 }
 
