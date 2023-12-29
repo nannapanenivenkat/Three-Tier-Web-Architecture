@@ -1,5 +1,5 @@
-resource "aws_s3_bucket" "Three_tier_bucket" {
-  bucket = "Three-tier-bucket"
+resource "aws_s3_bucket" "three_tier_bucket" {
+  bucket = "my_three-tier-bucket"
 
 
 
@@ -11,5 +11,5 @@ resource "aws_s3_bucket" "Three_tier_bucket" {
 
 
 output "s3_bucketname" {
-  value = aws_s3_bucket.Three_tier_bucket.bucket
+  value = aws_s3_bucket.three_tier_bucket.bucket
 }

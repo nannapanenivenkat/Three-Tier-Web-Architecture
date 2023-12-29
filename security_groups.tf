@@ -29,7 +29,7 @@ resource "aws_default_security_group" "web_sg_public" {
   }
 
     ingress {
-    description = "HTTP"
+    description = "HTTP from internet_facing_sg"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
@@ -37,7 +37,7 @@ resource "aws_default_security_group" "web_sg_public" {
   }
 
   tags = {
-    Name = "web_sg_public"
+    Name = "web-sg-public"
   }
 }
 
